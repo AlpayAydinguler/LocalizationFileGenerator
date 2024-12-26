@@ -35,7 +35,7 @@ Clone the repository and build the project using your preferred IDE or the CLI.
 ### Example Input
 
 1. Input Project Path: `D:\MVC\MySolution\MyProject`
-2. Input Output Path: `D:\MVC\MySolution\MyProject\LocalizationFiles`
+2. Input Output Path: `D:\MVC\MySolution\MyProject\Resources`
 
 ### Supported Key Syntax
 
