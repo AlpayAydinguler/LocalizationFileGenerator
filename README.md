@@ -50,9 +50,9 @@ Replace `"WelcomeToMyPage"` with any desired key.
 
 The tool will create `.resx` files for each language specified in the code. For example:
 
-- `Views.Home.Index.resx` (Neutral)
-- `Views.Home.Index.en.resx` (English)
-- `Views.Home.Index.tr.resx` (Turkish)
+- `Views\Home\Index.resx` (Neutral)
+- `Views\Home\Index.en.resx` (English)
+- `Views\Home\Index.tr.resx` (Turkish)
 
 ---
 
