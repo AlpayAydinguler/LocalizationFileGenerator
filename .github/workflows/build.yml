@@ -1,0 +1,35 @@
+name: .NET Build and Test
+
+# Trigger the workflow on push or pull request
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: windows-latest  # Use a Windows environment for .NET
+
+    steps:
+      # Step 1: Check out the code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up .NET
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.0.x'  # Specify the .NET version
+
+      # Step 3: Restore dependencies
+      - name: Restore dependencies
+        run: dotnet restore
+
+      # Step 4: Build the project
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      # Step 5: Run tests (if you have any)
+      - name: Test
+        run: dotnet test --no-build --verbosity normal
