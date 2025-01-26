@@ -146,6 +146,12 @@ class LocalizationFileGenerator
                     ? XElement.Load(outputFilePath)
                     : CreateResxXmlStructure();
 
+                // Add PublicResXFileCodeGenerator metadata for neutral resources
+                if (string.IsNullOrEmpty(language))
+                {
+                    AddResXCodeGeneratorMetadata(resxXml);
+                }
+
                 // Track existing keys to prevent duplicates
                 var existingKeys = new HashSet<string>(
                     resxXml.Descendants("data")
@@ -174,6 +180,37 @@ class LocalizationFileGenerator
                 }
 
                 resxXml.Save(outputFilePath);
+            }
+        }
+    }
+
+    static void AddResXCodeGeneratorMetadata(XElement resxXml)
+    {
+        const string metadataName = "ResXFileCodeGenerator";
+
+        // Check if metadata already exists
+        var existingMetadata = resxXml.Elements("metadata")
+            .FirstOrDefault(e => e.Attribute("name")?.Value == metadataName);
+
+        if (existingMetadata == null)
+        {
+            // Create new metadata element
+            var metadata = new XElement("metadata",
+                new XAttribute("name", metadataName),
+                new XAttribute("type", "System.Resources.ResXFileRef, System.Windows.Forms"),
+                new XElement("value", "PublicResXFileCodeGenerator"));
+
+            // Insert after last resheader but before any data elements
+            var lastResHeader = resxXml.Elements("resheader").LastOrDefault();
+            if (lastResHeader != null)
+            {
+                lastResHeader.AddAfterSelf(metadata);
+            }
+            else
+            {
+                // Fallback: Add after schema if resheaders missing
+                var schema = resxXml.Elements().FirstOrDefault(e => e.Name.LocalName == "schema");
+                schema?.AddAfterSelf(metadata);
             }
         }
     }
