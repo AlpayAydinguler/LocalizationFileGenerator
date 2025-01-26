@@ -145,6 +145,16 @@ else
 - 📁 Requires consistent project structure
 - 🔠 First-letter capitalization not preserved
 
+# Contributing Guide
+
+## Getting Started
+1. Fork the repository
+2. Create a feature branch
+3. Submit a PR with:
+   - Description of changes
+   - Related issue reference
+   - Test results
+
 ## License
 
 MIT License - See [LICENSE](LICENSE) for full text
