@@ -6,11 +6,19 @@ Automated .resx file generator for .NET applications with translation capabiliti
 
 ## Features
 
-- 🔍 **Automatic Key Detection**  
+- 🎯 **MVC-Optimized**  
+  Built for ASP.NET MVC projects with:
+  ```text
+  Controllers/      Views/       Models/
+  ├─ *.cs          ├─ *.cshtml  └─ DataAnnotations
+  ```
+- 🔍 **Automatic Detection**  
+  Scans controllers, views and model validations
   Scans `.cs` and `.cshtml` files for localization patterns
 - 🌐 **Multi-language Support**  
   Generates resource files for en, tr, and custom languages
-- 📂 **Structured Output**  
+- 📂 **Structured Output and Preservation**
+  Mirrors your MVC folder hierarchy in Resources/
   Creates `Resources` folders mirroring project structure
 - 🔄 **Translation API Integration**  
   Uses MyMemory Translation service for automatic translations
@@ -44,6 +52,17 @@ Automated .resx file generator for .NET applications with translation capabiliti
    ```
 
 ## Usage
+
+### Ideal for MVC Projects
+```text
+Original:
+/Controllers/HomeController.cs
+/Views/Home/Index.cshtml
+
+Generated:
+/Resources/Controllers/HomeController.en.resx
+/Resources/Views/Home/Index.tr.resx
+```
 
 1. Run the generator:
 
