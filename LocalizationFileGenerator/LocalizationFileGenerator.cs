@@ -22,10 +22,10 @@ class LocalizationFileGenerator
     {
         // Configure paths (currently hardcoded for testing)
         Console.WriteLine("Enter the project path:");
-        string solutionPath = Console.ReadLine();
+        string solutionPath = @"D:\Users\e_alp\source\repos\LudusAppoint"; //Console.ReadLine();
 
         Console.WriteLine("Enter the output path for .resx files:");
-        string outputPath = Console.ReadLine();
+        string outputPath = @"D:\Users\e_alp\source\repos\LudusAppoint"; //Console.ReadLine();
 
         // Supported languages (empty string represents neutral culture)
         string[] languages = { "", "en", "tr" };
@@ -188,19 +188,17 @@ class LocalizationFileGenerator
     {
         const string metadataName = "ResXFileCodeGenerator";
 
-        // Check if metadata already exists
         var existingMetadata = resxXml.Elements("metadata")
             .FirstOrDefault(e => e.Attribute("name")?.Value == metadataName);
 
         if (existingMetadata == null)
         {
-            // Create new metadata element
             var metadata = new XElement("metadata",
                 new XAttribute("name", metadataName),
                 new XAttribute("type", "System.Resources.ResXFileRef, System.Windows.Forms"),
                 new XElement("value", "PublicResXFileCodeGenerator"));
 
-            // Insert after last resheader but before any data elements
+            // Insert after last resheader
             var lastResHeader = resxXml.Elements("resheader").LastOrDefault();
             if (lastResHeader != null)
             {
@@ -208,9 +206,8 @@ class LocalizationFileGenerator
             }
             else
             {
-                // Fallback: Add after schema if resheaders missing
-                var schema = resxXml.Elements().FirstOrDefault(e => e.Name.LocalName == "schema");
-                schema?.AddAfterSelf(metadata);
+                // Fallback to adding after schema
+                resxXml.Elements().First().AddAfterSelf(metadata);
             }
         }
     }
@@ -309,22 +306,57 @@ class LocalizationFileGenerator
     {
         var resxXml = new XElement("root");
 
-        // XSD schema required for valid .resx format
+        // Full schema from Visual Studio-generated .resx
         string xsdMarkup = @"<xsd:schema id='root' xmlns='' xmlns:xsd='http://www.w3.org/2001/XMLSchema' xmlns:msdata='urn:schemas-microsoft-com:xml-msdata'>
-                <!-- Schema content omitted for brevity -->
-            </xsd:schema>";
+        <xsd:element name='root' msdata:IsDataSet='true'>
+            <xsd:complexType>
+                <xsd:choice maxOccurs='unbounded'>
+                    <xsd:element name='data'>
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name='value' type='xsd:string' minOccurs='0' msdata:Ordinal='1' />
+                                <xsd:element name='comment' type='xsd:string' minOccurs='0' msdata:Ordinal='2' />
+                            </xsd:sequence>
+                            <xsd:attribute name='name' type='xsd:string' msdata:Ordinal='1' />
+                            <xsd:attribute name='type' type='xsd:string' msdata:Ordinal='3' />
+                            <xsd:attribute name='mimetype' type='xsd:string' msdata:Ordinal='4' />
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name='resheader'>
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name='value' type='xsd:string' minOccurs='0' msdata:Ordinal='1' />
+                            </xsd:sequence>
+                            <xsd:attribute name='name' type='xsd:string' use='required' />
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>";
 
         resxXml.Add(XElement.Parse(xsdMarkup));
 
-        // Add required resheaders
-        resxXml.Add(new XElement("resheader", new XAttribute("name", "resmimetype"),
+        // Add resheaders with exact VS values
+        resxXml.Add(new XElement("resheader",
+            new XAttribute("name", "resmimetype"),
             new XElement("value", "text/microsoft-resx")));
-        resxXml.Add(new XElement("resheader", new XAttribute("name", "version"),
-            new XElement("value", "2.0")));
-        resxXml.Add(new XElement("resheader", new XAttribute("name", "reader"),
-            new XElement("value", "System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral")));
-        resxXml.Add(new XElement("resheader", new XAttribute("name", "writer"),
-            new XElement("value", "System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral")));
+
+        resxXml.Add(new XElement("resheader",
+            new XAttribute("name", "version"),
+            new XElement("value", "1.3")));
+
+        resxXml.Add(new XElement("resheader",
+            new XAttribute("name", "reader"),
+            new XElement("value",
+                "System.Resources.ResXResourceReader, System.Windows.Forms, " +
+                "Version=2.0.3500.0, Culture=neutral")));
+
+        resxXml.Add(new XElement("resheader",
+            new XAttribute("name", "writer"),
+            new XElement("value",
+                "System.Resources.ResXResourceWriter, System.Windows.Forms, " +
+                "Version=2.0.3500.0, Culture=neutral")));
 
         return resxXml;
     }
