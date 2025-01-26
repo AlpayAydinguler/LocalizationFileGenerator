@@ -1,94 +1,164 @@
+# Localization File Generator
 
-# Localization File Generator for MVC Projects
+Automated .resx file generator for .NET applications with translation capabilities
 
-This tool automates the creation of `.resx` localization files for MVC projects. It scans views (`.cshtml`) and controllers (`*Controller.cs`) for localization keys and generates `.resx` files for specified languages. The tool also supports translation through the MyMemory API.
-
----
+![.NET Version](https://img.shields.io/badge/.NET-6.0%2B-blue)
 
 ## Features
 
-- **Automated Key Extraction**: Scans `.cshtml` and `*Controller.cs` files for keys using patterns like `@Localizer["Key"]` and `_localizer["Key"]`.
-- **Neutral and Language-Specific Files**: Creates both neutral (`.resx`) and language-specific (`.en.resx`, `.tr.resx`) files.
-- **Translation Support**: Automatically translates keys into target languages using the MyMemory API.
-- **MVC-Compatible**: Works seamlessly with ASP.NET MVC projects.
+- 🎯 **MVC-Optimized**  
+  Built for ASP.NET MVC projects with:
+  ```text
+  Controllers/      Views/       Models/
+  ├─ *.cs          ├─ *.cshtml  └─ DataAnnotations
+  ```
+- 🔍 **Automatic Detection**  
+  Scans controllers, views and model validations
+  Scans `.cs` and `.cshtml` files for localization patterns
+- 🌐 **Multi-language Support**  
+  Generates resource files for en, tr, and custom languages
+- 📂 **Structured Output and Preservation**
+  Mirrors your MVC folder hierarchy in Resources/
+  Creates `Resources` folders mirroring project structure
+- 🔄 **Translation API Integration**  
+  Uses MyMemory Translation service for automatic translations
+- ⚠️ **Duplicate Prevention**  
+  Ensures unique keys in resource files
 
----
+## Requirements
+
+- [.NET 6.0 SDK](https://dotnet.microsoft.com/download) or later
+- Internet connection (for translation API)
+- Valid project directory structure
+
+## Installation
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/yourusername/localization-generator.git
+   ```
+
+2. Navigate to project directory:
+
+   ```bash
+   cd localization-generator
+   ```
+
+3. Build the solution:
+
+   ```bash
+   dotnet build
+   ```
+
+## Usage
+
+### Ideal for MVC Projects
+```text
+Original:
+/Controllers/HomeController.cs
+/Views/Home/Index.cshtml
+
+Generated:
+/Resources/Controllers/HomeController.en.resx
+/Resources/Views/Home/Index.tr.resx
+```
+
+1. Run the generator:
+
+   ```bash
+   dotnet run --project LocalizationFileGenerator.csproj
+   ```
+
+2. Provide paths when prompted:
+
+   ```text
+   Enter the project path:
+   D:\Projects\YourSolution
+
+   Enter the output path for .resx files: 
+   D:\Projects\YourSolution
+   ```
+
+3. Generated files will appear in:
+
+   ```text
+   YourSolution/
+   └── Resources/
+       └── [Mirrored project structure]/
+           ├── FileName.en.resx
+           ├── FileName.tr.resx
+           └── FileName.resx
+   ```
+
+## Configuration
+
+### Adding Languages
+
+Modify the `languages` array in code:
+
+```csharp
+string[] languages = { 
+    "",        // Neutral culture
+    "en",      // English
+    "tr",      // Turkish
+    "de"       // Add new languages
+};
+```
+
+### Data Annotation Support
+
+Format validation attributes:
+
+```csharp
+[Required(ErrorMessageResourceType = typeof(Resources.User),
+          ErrorMessageResourceName = "NameRequired")]
+public string Name { get; set; }
+```
+
+## Translation Process
+
+### API Integration
+
+Translation requests use:
+
+```csharp
+string url = $"{baseUrl}get?q={text}&langpair=en|{targetLang}";
+```
+
+### Response Handling
+
+```csharp
+if (translationResult?.responseStatus == 200)
+{
+    return translationResult.TranslatedText;
+}
+else
+{
+    return text; // Fallback to original
+}
+```
+
+## Limitations
+
+- ⏳ Translation API rate limits (1000/day free tier)
+- 📁 Requires consistent project structure
+- 🔠 First-letter capitalization not preserved
+
+# Contributing Guide
 
 ## Getting Started
+1. Fork the repository
+2. Create a feature branch
+3. Submit a PR with:
+   - Description of changes
+   - Related issue reference
+   - Test results
 
-### Prerequisites
+## License
 
-- .NET SDK (6.0 or later)
-- An MVC project with `@Localizer["Key"]` or `_localizer["Key"]` in views and controllers.
-
-### Installation
-
-Clone the repository and build the project using your preferred IDE or the CLI.
-
-### Usage
-
-1. Place your MVC project in a directory and locate its root path.
-2. Run the tool and provide the following inputs:
-    - **Project Path**: The root path of your MVC project.
-    - **Output Path**: Directory where the generated `.resx` files will be saved.
-
-### Example Input
-
-1. Input Project Path: `D:\MVC\MySolution\MyProject`
-2. Input Output Path: `D:\MVC\MySolution\MyProject\Resources`
-
-### Supported Key Syntax
-
-Keys should follow the patterns below:
-
-- `@Localizer["WelcomeToMyPage"]`
-- `_localizer["WelcomeToMyPage"]`
-
-Replace `"WelcomeToMyPage"` with any desired key.
-
-### Output
-
-The tool will create `.resx` files for each language specified in the code. For example:
-
-- `Views\Home\Index.resx` (Neutral)
-- `Views\Home\Index.en.resx` (English)
-- `Views\Home\Index.tr.resx` (Turkish)
+MIT License - See [LICENSE](LICENSE) for full text
 
 ---
 
-## Translation API
-
-The tool uses the MyMemory API to translate keys. If a translation is unavailable, it will use the original key.
-
-### API Details
-
-- Base URL: `https://api.mymemory.translated.net/`
-- Example Request: `https://api.mymemory.translated.net/get?q=Hello&langpair=en|tr`
-
----
-
-## File Structure
-
-```
-LocalizationFileGenerator
-│
-├── Program.cs
-├── LocalizationFileGenerator.cs
-└── README.md
-```
-
----
-
-## Contributing
-
-Feel free to fork the repository, make improvements, and submit pull requests.
-
----
-
-## Disclaimer
-
-This tool is provided as-is and is not affiliated with MyMemory or any other organization.
-
----
-
-Enjoy seamless localization for your MVC projects!
+**Note:** Always test with a sample project before running on production code!
