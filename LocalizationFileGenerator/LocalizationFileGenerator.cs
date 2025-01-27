@@ -55,12 +55,10 @@ class LocalizationFileGenerator
 
         // Get view files
         var cshtmlFiles = Directory.GetFiles(solutionPath, "*.cshtml", SearchOption.AllDirectories)
-                                    .Where(file => !Path.GetFileName(file).StartsWith("_"))
                                     .ToList();
 
         // Get code files
         var csFiles = Directory.GetFiles(solutionPath, "*.cs", SearchOption.AllDirectories)
-                                .Where(file => !Path.GetFileName(file).StartsWith("_"))
                                 .ToList();
 
         files.AddRange(cshtmlFiles);
